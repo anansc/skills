@@ -13,7 +13,8 @@ Toda saída é **texto Markdown**, pronto para colar como documento interno no e
 ## 2. REGRAS DE TRABALHO
 
 - **Fonte dos dados:** use apenas o que consta nos documentos. Quando faltar informação, escreva `[a preencher]` ou `[nº SEI a confirmar]`.
-- **Formato Visual:** A seção de verificação documental do Check-List deve ser apresentada obrigatoriamente em formato de **Tabela Markdown**.
+- **Geração Direta:** Gere o Check-List Final e a Notificação diretamente na resposta, sem solicitar confirmação prévia do usuário.
+- **Formato Visual:** As seções de Identificação e de Verificação Documental do Check-List devem ser apresentadas obrigatoriamente em formato de **Tabela Markdown**.
 - **Regra de Definição de Status:**
   - `Item atendido`: A evidência, com nº SEI, corrobora integralmente o requisito normativo.
   - `Item não atendido`: Documento ausente, vencido, com erro formal ou em desacordo com a exigência.
@@ -70,12 +71,7 @@ Toda saída é **texto Markdown**, pronto para colar como documento interno no e
 
 ---
 
-
-
-
-```
-
-### 5.3 Check-List Final (Cenário A, após confirmação)
+### 5.3 Check-List Final (Cenário A)
 ```markdown
 # CHECK-LIST DE HABILITAÇÃO — ANEXO II
 **Análise de requerimento de autorização para instalação portuária ([TUP/ETC/IP4/IPTur])**
@@ -83,24 +79,35 @@ Toda saída é **texto Markdown**, pronto para colar como documento interno no e
 Lei nº 12.815/2013 — Decreto nº 8.033/2013 — Resolução ANTAQ nº 71/2022 (arts. 4º a 6º)
 
 ## IDENTIFICAÇÃO
-- **Data da análise:** [data]
-- **Protocolo e data do requerimento:** SEI [nº] de [data]
-- **Publicação da íntegra no sítio da ANTAQ:** [data/link]
-- **Processo nº:** [nº]
-- **Assunto:** [assunto]
-- **Requerente:** [nome] — CNPJ da sede: [..]
-- **Endereço da sede / CEP:** [..]
-- **Contato (cargo) / Tel. / E-mail:** [..]
-- **Instalação:** [nome] — CNPJ: [..]
-- **Endereço da instalação / CEP:** [..]
-- **Contato (cargo) / Tel. / E-mail:** [..]
-- **Coordenadas geográficas (2 pontos):** [..]
+
+| Campo | Informação |
+| :--- | :--- |
+| **Data de análise:** | [a preencher] |
+| **Data do requerimento:** | [a preencher] |
+| **Motivo do requerimento:** | [a preencher] |
+| **Processo Nº:** | [a preencher] |
+| **Assunto:** | [a preencher] |
+| **Nome da requerente:** | [a preencher] |
+| **Endereço da sede da requerente:** | [a preencher] |
+| **CEP da sede:** | [a preencher] |
+| **CNPJ da sede:** | [a preencher] |
+| **Pessoa de contato na sede - Cargo:** | [a preencher] |
+| **Tel/Fax/Celular do contato na sede:** | [a preencher] |
+| **E-mail do contato na sede:** | [a preencher] |
+| **Nome da instalação:** | [a preencher] |
+| **Endereço da instalação da requerente:** | [a preencher] |
+| **CEP da instalação:** | [a preencher] |
+| **CNPJ da instalação:** | [a preencher] |
+| **Pessoa de contato na instalação - Cargo:** | [a preencher] |
+| **Tel/Fax/Celular do contato na instalação:** | [a preencher] |
+| **E-mail do contato na instalação:** | [a preencher] |
+| **Coordenadas Geográficas (dois pontos) *obrigatório:** | [a preencher] |
 
 ## VERIFICAÇÃO DOCUMENTAL — ART. 4º DA RES. ANTAQ Nº 71/2022
 
 | Item | Requisito / Exigência Normativa | Situação | Constatação Detalhada e Referência SEI | Conferir (Análise Interna) |
 | :--- | :--- | :--- | :--- | :--- |
-| **I** | Declaração de Adequação | [Situação] | [Detalhamento com ref. SEI] | [Observação/orientação ou hífem] |
+| **I** | Declaração de Adequação | [Situação] | [Detalhamento com ref. SEI] | [Observação/orientação ou hífen] |
 | **II** | Ficha Cadastral | [Situação] | [Detalhamento com ref. SEI] | [Ex: Conferir soma dos itens 34+35] |
 | **III** | Ato Constitutivo | [Situação] | [Detalhamento com ref. SEI] | - |
 | **IV** | CNPJ Sede e Instalação | [Situação] | [Detalhamento com ref. SEI] | - |
@@ -124,8 +131,6 @@ Lei nº 12.815/2013 — Decreto nº 8.033/2013 — Resolução ANTAQ nº 71/2022
 | **XII** | Parecer da Autoridade Marítima | [Situação] | [Detalhamento com ref. SEI] | - |
 | **XIII**| Certidão/Disponibilidade SPU | [Situação] | [Detalhamento com ref. SEI] | - |
 
-
-
 ## CONCLUSÃO
 Da verificação da documentação apresentada, constata-se que o requerimento não atende integralmente aos requisitos do art. 4º da Resolução ANTAQ nº 71/2022, devendo a requerente ser notificada a promover as adequações no prazo de 30 (trinta) dias, sob pena de arquivamento (art. 5º, parágrafo único) [havendo pendência fiscal federal/FGTS: "e art. 6º, §§ 1º e 2º"].
 
@@ -133,7 +138,7 @@ Da verificação da documentação apresentada, constata-se que o requerimento n
 1. **[Inciso/alínea]:** [o que falta] (ref. SEI [nº]).
 ```
 
-### 5.4 Notificação (Cenário A, após confirmation)
+### 5.4 Notificação (Cenário A)
 ```markdown
 # NOTIFICAÇÃO
 
