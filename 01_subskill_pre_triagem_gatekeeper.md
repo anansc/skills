@@ -1,74 +1,92 @@
-# SUBSKILL 1 — PRÉ-TRIAGEM E GATEKEEPER DE ADMISSIBILIDADE
+# SUBSKILL 1 — PRÉ-TRIAGEM E GATEKEEPER
 
-> Esta subskill pode rodar isoladamente em sistema apartado. Sua função é identificar duplicidade e realizar triagem preliminar de admissibilidade; **não analisa mérito nem lê o conteúdo dos documentos**.
+> Função: consultar metadados, identificar duplicidade e fazer triagem preliminar da Declaração de Adequação. Pode rodar isoladamente. Não avalia mérito, validade nem suficiência documental. A leitura cadastral limitada abaixo é exceção expressa e não constitui leitura de mérito.
 
-## 1. Escopo e proibições
+## 1. Ferramentas, limites e proibições
 
-- Use `processos_pesquisar`, `processo_consultar` e `documentos_listar` quando disponíveis.
-- Não use `documento_ler`, OCR, extração de texto ou trechos de conteúdo para decidir admissibilidade ou presença da Declaração.
-- Não avalie validade, assinatura, conteúdo, conformidade técnica ou suficiência da Declaração.
-- Não crie, assine, tramite ou altere documentos ou metadados no SEI.
-- Retorne um relatório estruturado ao sistema chamador. Se isolada, apresente esse relatório ao operador.
+- Use `processo_consultar`, `documentos_listar` e `processos_pesquisar` quando disponíveis.
+- Use `documento_ler` **somente** na Etapa 1B, quando CNPJ e/ou nome da instalação não estiverem explícitos nos metadados. Uma chamada por documento, `tamanho: 5000`, no máximo dois documentos, nesta ordem: comprovante de CNPJ; Ficha Cadastral; página 1 da Petição Inicial. Leia somente o trecho cadastral necessário. Não use a chamada para mérito, Declaração ou conteúdo técnico.
+- Não use OCR ou extração adicional fora do mecanismo disponível. Não infira texto não retornado.
+- Nunca crie, assine, expeça, tramite ou altere documentos/metadados do SEI.
+- Não faça perguntas intermediárias. Se a identidade permanecer inacessível, marque `INDETERMINADO` e siga à S2.
 
-## 2. Ordem de execução
+## 2. Sequência operacional
 
-### Etapa 1 — Obter a identidade mínima
+### Etapa 1 — consulta inicial obrigatória
 
-1. Consulte o protocolo fornecido com `processo_consultar` e registre número do processo, especificação, interessados e demais metadados pertinentes, conforme disponibilidade.
-2. Obtenha o CNPJ da requerente e da instalação apenas de metadados acessíveis ou de parâmetros fornecidos pelo operador. Não abra documentos para extraí-los.
-3. Registre a identificação da instalação (nome, endereço/localidade ou especificação disponível). Se CNPJ ou instalação não puderem ser identificados, registre `INDETERMINADO` para a verificação que dependa desses dados.
+1. Execute `processo_consultar` para o protocolo recebido. Registre número, especificação, interessado, tipo e identificadores efetivamente visíveis.
+2. Execute `documentos_listar`. Registre nº SEI, nome/tipo, data de inclusão, estado cancelado/substituído, sigilo/restrição, truncamento e indicação de pacote/arquivo único.
+3. Extraia dos metadados o CNPJ da requerente, CNPJ da instalação e nome/localização da instalação, sem inferências. Valor mascarado (ex.: `[PESSOA_1]`, `[CNPJ_1]`) não é comparável.
 
-### Etapa 2 — Pesquisa prévia de duplicidade
+### Etapa 1B — extração cadastral pontual autorizada
 
-Faça esta etapa antes de qualquer leitura de conteúdo. Pesquise processos em todo o órgão usando `processos_pesquisar`:
+Se CNPJ e/ou nome da instalação não estiverem explícitos nos metadados — inclusive se aparecerem mascarados —, tente extraí-los pontualmente dos documentos cadastrais abaixo, desde que a lista não indique pacote único genérico/consolidado:
 
-1. Pesquise pelo CNPJ exato da requerente e, se conhecido, também pelo CNPJ da instalação, sem restringir desnecessariamente a unidade.
-2. Use filtros como `em: "processos"`, `texto`, `especificacao`, `tipo_processo` ou período, conforme o esquema da ferramenta. Solicite limite suficiente para os resultados relevantes (máximo 200 por chamada) e registre filtros, data da pesquisa e eventual sinalização de truncamento.
-3. Faça buscas adicionais por CNPJ sem pontuação, nome empresarial e nome da instalação quando a primeira pesquisa puder não localizar variações cadastrais. Não interprete resultado vazio isolado como prova universal de inexistência se a pesquisa estiver limitada, truncada ou sem identificadores confiáveis.
-4. Para cada processo candidato, use `processo_consultar` para confirmar os metadados disponíveis. Compare **mesmo CNPJ e mesma instalação**. Nome empresarial semelhante, CNPJ igual sem instalação coincidente, ou instalação semelhante sem CNPJ coincidente não bastam para confirmar duplicidade.
-5. Classifique:
-   - `DUPLICIDADE_CONFIRMADA`: pelo menos outro processo ativo/localizável com mesmo CNPJ e mesma instalação, conforme metadados comparáveis. Registre os números dos processos e os atributos coincidentes.
-   - `SEM_DUPLICIDADE_IDENTIFICADA`: busca adequada, sem resultados candidatos correspondentes, sem limitação relevante conhecida.
-   - `INDETERMINADO`: dados insuficientes, resultados truncados ou não acessíveis, divergência de identificação, ou pesquisa indisponível.
-6. Duplicidade confirmada interrompe a pré-triagem e gera relatório ao operador/coordenadora. Não arquive, não cancele e não decida qual processo deve prevalecer.
+1. Selecione, conforme disponível: comprovante de CNPJ; na falta, Ficha Cadastral; na falta, página inicial da Petição Inicial.
+2. Leia o documento com `documento_ler(documentos: ["SEI"], tamanho: 5000)`. Limite total de dois documentos/tentativas, somente para extrair CNPJ e nome da instalação.
+3. Se a lista indicar pacote único genérico/consolidado, não percorra o pacote em busca cadastral: marque identidade dependente como `INDETERMINADO` e avance à S2.
+4. Se a ferramenta truncar, não revelar os dados ou retornar marcadores, registre `INDETERMINADO` imediatamente. Não entre em loop nem bloqueie o fluxo.
+5. Registre nº SEI, fonte e limitação. Use apenas os identificadores necessários à pesquisa.
 
-### Etapa 3 — Gatekeeper da Declaração usando apenas metadados
+Essa exceção é restrita à identificação cadastral. A busca de duplicidade ocorre depois dela e antes da leitura de mérito da S2.
 
-1. Execute `documentos_listar` para obter a relação de documentos do processo, com nº SEI, tipo/nome, data de inclusão, situação (cancelado/substituído), restrição e demais metadados disponíveis.
-2. Procure correspondência explícita no tipo, nome ou descrição, incluindo variantes: “Declaração de Adequação”, “Declaração de adequação do empreendimento”, “adequação às diretrizes”, “SNPTA”, “Secretaria Nacional de Portos” ou “MPOR/Ministério de Portos e Aeroportos”. A busca de palavras é apenas indício de metadado, não avaliação do conteúdo.
-3. Considere versões não canceladas. Registre documentos cancelados e versões substituídas; não use documento cancelado como prova de presença atual se existir versão substitutiva.
-4. Classifique:
-   - `IDENTIFICADA`: metadado identifica claramente a Declaração. Registre nº SEI, nome/tipo e data de inclusão. Encaminhe à S2 para leitura e validação de mérito.
-   - `NÃO_IDENTIFICADA`: lista de documentos suficientemente completa; nenhuma entrada corresponde à Declaração; não há pacote ou documento de nome genérico que plausivelmente possa contê-la; não há lacuna, restrição ou truncamento de metadados. Este achado permite o gatilho de ausência conforme a regra de negócio; não afirme que leu o conteúdo.
-   - `INCONCLUSIVA`: metadados incompletos, documento com nome genérico (por exemplo, “Anexos”, “Documentos diversos”, “Anexo 3”), pacote, restrição, cancelamento ambíguo ou qualquer possibilidade razoável de a Declaração estar agrupada sem identificação. Não conclua ausência; encaminhe à S2 para leitura integral.
-5. Se os metadados estiverem inconclusivos, siga para a próxima fase sem pedir autorização, sem bloquear o processo e sem gerar arquivamento. A S2 verificará o conteúdo e a S3 cuidará da notificação/desfecho se a ausência for confirmada.
+### Etapa 2 — pesquisa de duplicidade
 
-## 3. Relatório obrigatório de saída
+Pesquise com identificadores confiáveis por `processos_pesquisar`, sem restringir desnecessariamente a unidade. Faça as consultas necessárias a: (a) CNPJ da requerente formatado; (b) CNPJ sem pontuação, se a ferramenta puder retornar resultado distinto; (c) nome da instalação. Inclua CNPJ da instalação se identificado e pertinente. Limite cada chamada ao máximo de 200 resultados; registre filtro, data, truncamento e limitações. Não repita consultas equivalentes nem entre em loop.
 
-Retorne exatamente os campos abaixo, preenchidos com fatos disponíveis:
+Para cada candidato, use `processo_consultar` e compare **mesmo CNPJ e mesma instalação**. Razão social semelhante, CNPJ igual sem instalação coincidente ou nome de instalação isolado não confirmam duplicidade.
+
+- `DUPLICIDADE_CONFIRMADA`: outro processo ativo/localizável tem mesmo CNPJ e mesma instalação, com evidência comparável. Registre processos e atributos coincidentes; encaminhe à coordenadora e encerre análise documental.
+- `SEM_DUPLICIDADE_IDENTIFICADA`: identificadores confiáveis, pesquisa adequada sem candidato correspondente e sem limitação relevante.
+- `INDETERMINADO`: CNPJ/nome ausente ou mascarado, pacote que impede extração, pesquisa indisponível/truncada/limitada ou candidatos não comparáveis. Não bloqueie: encaminhe à S2, salvo duplicidade confirmada.
+
+Resultado vazio ou truncado não prova inexistência universal de processo correspondente.
+
+### Etapa 3 — gatekeeper da Declaração por metadados
+
+1. Examine títulos/tipos/descrições em busca de variantes: “Declaração de Adequação”, “adequação do empreendimento”, “diretrizes do setor portuário”, “SNPTA”, “Secretaria Nacional de Portos”, “MPOR” ou “Ministério de Portos e Aeroportos”. É indício de metadado, não avaliação de conteúdo.
+2. Registre documentos cancelados/substituídos. Documento cancelado não comprova presença atual se houver substituição identificável.
+3. Classifique:
+   - `IDENTIFICADA`: título/tipo/descrição identifica claramente a Declaração não cancelada. Encaminhe à S2 para validar conteúdo, escopo, emissão e validade.
+   - `INCONCLUSIVA`: não localizada por título, mas existe documento genérico/extenso, petição inicial, “Anexos”, pacote, PDF único consolidado, arquivo sem descrição, lacuna/truncamento da lista, restrição, cancelamento ambíguo ou qualquer possibilidade razoável de estar embutida. Encaminhe à S2. Não bloqueie nem arquive.
+   - `AUSENTE_POR_METADADOS`: somente se a árvore de documentos estiver comprovadamente 100% completa e explícita, sem arquivo genérico/composto, pacote, restrição, truncamento ou lacuna, e nenhuma entrada plausível corresponder à Declaração. Permite encaminhar o gatilho à S3 sem S2.
+4. Se a árvore não for demonstravelmente completa e explícita, use `INCONCLUSIVA`, nunca `AUSENTE_POR_METADADOS`.
+
+## 3. Roteamento e saída obrigatória
+
+Roteamento: duplicidade confirmada → encerrar sem arquivamento; Declaração identificada/inconclusiva → S2; ausência estrita por metadados → S3 com `DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS`; duplicidade indeterminada → S2 sem repetir tentativas cadastrais improdutivas.
+
+Entregue o relatório abaixo com fatos disponíveis:
 
 ```yaml
 processo: "[protocolo]"
 data_da_consulta: "[data ou a preencher]"
+identidade:
+  cnpj_requerente: "[valor | mascarado | indisponível]"
+  cnpj_instalacao: "[valor | mascarado | indisponível]"
+  instalacao: "[nome/localização | mascarado | indisponível]"
+  fonte: "[metadados ou SEI da extração cadastral; método e limitação]"
 duplicidade:
   status: "DUPLICIDADE_CONFIRMADA | SEM_DUPLICIDADE_IDENTIFICADA | INDETERMINADO"
-  cnpj_comparado: "[valor ou não disponível]"
-  instalacao_comparada: "[identificação ou não disponível]"
-  consultas_realizadas: "[filtros, consultas e eventuais limitações]"
-  processos_candidatos: "[protocolos e atributos coincidentes, ou nenhum]"
-gatekeeper_declaracao:
-  status: "IDENTIFICADA | NÃO_IDENTIFICADA | INCONCLUSIVA"
-  documentos_candidatos: "[nº SEI, metadado e data, ou nenhum]"
-  limitacoes: "[limitações ou nenhuma]"
+  consultas_realizadas: "[filtros, data, truncamento e limites; sem repetição equivalente]"
+  processos_candidatos: "[protocolos e atributos coincidentes | nenhum]"
+declaracao_metadados:
+  status: "IDENTIFICADA | INCONCLUSIVA | AUSENTE_POR_METADADOS"
+  documentos_candidatos: "[SEI/título/data/estado | nenhum]"
+  arvore_completa_e_sem_genericos: "sim | não | indeterminado"
+  limitacoes: "[pacotes, títulos genéricos, restrição, truncamento | nenhuma]"
 encaminhamento:
-  acionar_subskill_2: "sim | não"
-  gatilho_para_subskill_3: "nenhum | DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS"
-  motivo: "[fundamentação factual breve]"
+  proximo_modulo: "S2 | S3 | ENCERRAR_POR_DUPLICIDADE"
+  gatilho: "nenhum | DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS"
+  motivo: "[fato breve]"
 ```
 
-Regras de roteamento:
+## 4. Autoverificação
 
-- `DUPLICIDADE_CONFIRMADA`: acione a coordenadora/operador e encerre sem análise documental adicional.
-- `IDENTIFICADA`: acione S2; não acione arquivamento por ausência.
-- `INCONCLUSIVA`: acione S2; jamais acione arquivamento por ausência a partir desse resultado.
-- `NÃO_IDENTIFICADA`: não acione S2 apenas para provar presença; encaminhe o gatilho à S3 para minuta imediata de arquivamento conforme a regra operacional do setor.
+- Consulta inicial e listagem executadas antes do gatekeeper?
+- Leitura cadastral limitada a `tamanho: 5000`, até dois documentos e somente CNPJ/nome da instalação?
+- Identidade inacessível resultou em `INDETERMINADO`, sem loop?
+- Duplicidade confirmada apenas com CNPJ e instalação coincidentes?
+- PDF único, petição extensa ou título genérico resultou em `INCONCLUSIVA`?
+- `AUSENTE_POR_METADADOS` usado apenas com árvore completa, explícita e sem conteúdo genérico/composto?
+- Nenhum documento alterado ou expedido no SEI?
