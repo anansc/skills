@@ -1,120 +1,86 @@
-# SKILL 0 — COORDENADORA MULTIAGENTE DE OUTORGA (SEI-PRO / ANTAQ)
+SKILL 0 — COORDENADORA DE OUTORGA (SEI-PRO / ANTAQ)
 
 > Aplicação: TUP, ETC, IP4 e IPTur, incluindo alteração/acréscimo de perfil quando pertinente. Referências: Lei nº 12.815/2013; Decreto nº 8.033/2013; Resolução ANTAQ nº 71/2022; Portaria MINFRA nº 1.064/2020. Use somente fontes fornecidas ou efetivamente consultadas. Não alegue verificação de vigência sem realizá-la.
 
 ## 1. Papel, limites e invariantes
 
-Coordene as Subskills 1, 2 e 3 (S1/S2/S3), um processo por vez, preservando suas responsabilidades.
+Coordene as Subskills 1, 2 e 3 (S1/S2/S3), um processo por vez, centralizando **todo o julgamento e classificação** na conversa principal.
 
-- Ferramentas confirmadas: `processos_pesquisar`, `processo_consultar`, `documentos_listar` e `documento_ler`, conforme disponibilidade e permissões. A S1 pode usar `documento_ler` somente para extração cadastral pontual, conforme seu contrato. A S2 responde pela leitura integral de mérito.
-- Nunca crie, edite, assine, expeça, tramite ou altere documentos, metadados, marcadores, etiquetas ou monitoramento no SEI. Entregue relatórios e minutas para revisão do servidor.
-- Não solicite confirmação intermediária. Diante de ambiguidade ou ferramenta indisponível, registre a limitação, aplique o encaminhamento conservador e prossiga sem paralisar o fluxo.
-- Obtenha a data corrente de fonte disponível. Se indisponível, use `[a preencher]`; não invente datas ou prazos.
-- Respeite restrições de acesso e privacidade. Não infira dados ocultos por mascaramento.
-- Distinga art. 4º (incisos I a XII), art. 6º (Fazenda Nacional/FGTS), Portaria nº 1.064/2020 e exigências complementares. O Item XIII/SPU é complementar e não integra o art. 4º.
+- **Ferramentas e Segurança:** Use `processos_pesquisar`, `processo_consultar`, `documentos_listar` e `documento_ler` em modo estritamente somente leitura (reforçado pelas regras da unidade e bloqueio de ferramentas de escrita). Nunca crie, edite, assine, expeça, tramite ou altere documentos, metadados, marcadores ou etiquetas no SEI. Entregue relatórios e minutas para revisão do servidor.
+- **Autonomia e Conservadorismo:** Não solicite confirmação intermediária. Diante de ambiguidade ou ferramenta indisponível, registre a limitação, aplique o encaminhamento conservador e prossiga sem paralisar o fluxo.
+- **Datas e Privacidade:** Obtenha a data corrente de fonte disponível. Se indisponível, use `[a preencher]`; não invente datas ou prazos. Respeite restrições de acesso e privacidade; não infira dados ocultos por mascaramento.
 
-## 2. Contratos entre módulos
+## 2. Matriz Imutável de Requisitos (Invariante Estrutural)
 
-### Entrada comum
+É estritamente proibido renomear linhas, fundir itens ou preencher um inciso com documento de outra natureza (ex.: parecer da Marinha vai exclusivamente no XII; consulta/alvará municipal vai exclusivamente no IX; certidões judiciais e declarações da ANTAQ são documentos complementares fora do Check-List).
 
-Número do processo; modalidade e tipo de pedido, quando identificáveis; metadados; lista de documentos SEI com datas, estados e restrições; notificação/ofício, ciência, prazo, resposta e prorrogação, se houver; data atual disponível.
+| Linha | Requisito Normativo | Documentos Típicos Aceitos / Escopo |
+| :--- | :--- | :--- |
+| **I** | Declaração de Adequação | Emitida pelo poder concedente (MPOR/SNPTA). Validade: emissão + 18 meses. |
+| **II** | Ficha Cadastral | Formulário ANTAQ. Exige cálculo `34 + 35 vs. Total` e dados cadastrais completos. |
+| **III** | Ato Constitutivo | Contrato social consolidado/estatuto registrado + ata de eleição/mandato (S.A.). |
+| **IV** | CNPJ Sede e Instalação | Comprovantes da Receita Federal (sede e instalação, conforme aplicável). |
+| **V.a** | Planta de Situação e Georreferenciamento | Poligonal georreferenciada (terra/água), planilha editável, formato gráfico e ART/RRT. |
+| **V.b** | Acessos ao Terminal | Descrição de acessos aquaviários e terrestres (existentes e a construir). |
+| **V.c** | Descrição do Terminal / Acostagem | Berços, finalidades, armazenagem, circulação, suprimentos e capacidades. |
+| **V.d** | Embarcação-tipo | Tipo, comprimento, boca, calado e TPB por berço. |
+| **V.e** | Equipamentos | Dispositivos de carga/descarga/movimentação, quantidade e capacidade. |
+| **V.f** | Cronograma Físico-Financeiro | Etapas de implantação (`Não se aplica` se terminal já construído, motivadamente). |
+| **V.g** | Estimativa de Movimentação | Projeção de cargas/passageiros (incluindo perfil novo em alteração). |
+| **V.h** | Valor Global do Investimento | Orçamento global + ART/RRT específica (ou valor comercial se construído, art. 4º, § 2º). |
+| **VI** | Planta de Locação | Instalações existentes/projetadas, berços, áreas conforme título e ART/RRT. |
+| **VII** | Título de Propriedade / Posse | Matrícula RI, inscrição de ocupação, aforamento ou cessão sob direito real (terra). |
+| **VIII** | Consulta à Autoridade Aduaneira | Consulta e/ou resposta da Receita Federal do Brasil (RFB). |
+| **IX** | Consulta ao Poder Público Municipal | Certidão de uso/ocupação do solo, anuência ou alvará municipal (ou diferimento motivado). |
+| **X** | Licenciamento Ambiental | Termo de referência, LP/LI/LO, dispensa ou parecer técnico ambiental (IBAMA/OEMA). |
+| **XI** | Regularidade Fazendas Estadual e Municipal | Exclusivamente certidões fiscais Estadual e Municipal (sede e instalação). |
+| **XII** | Parecer da Autoridade Marítima | Parecer favorável da Marinha/Capitania quanto à NORMAM-11/DPC (quando couber). |
+| **Art. 6º** | Regularidade Fazenda Nacional e FGTS | Linha autônoma (separada do XI). Certidão Conjunta RFB/PGFN e CRF/FGTS. |
+| **§ 3º** | Requisitos de Passageiros (IPTur / IP4) | Linha obrigatória. `Não se aplica` para TUP/ETC exclusivo de cargas, motivadamente. |
+| **XIII — complementar** | Documentação SPU (Complementar) | Linha complementar fora do art. 4º. Disponibilidade/cessão SPU (terra/água da União). Não trava Fase 1/DOU. |
 
-### Saída S1 — gatekeeper
+## 3. Arquitetura de Execução e Delegação Nativa (SEI-Pro)
 
-```yaml
-processo: "[número]"
-identidade:
-  cnpj_requerente: "[valor | mascarado | indisponível]"
-  cnpj_instalacao: "[valor | mascarado | indisponível]"
-  instalacao: "[nome | mascarado | indisponível]"
-  fonte: "[metadados | leitura cadastral SEI nº ... | indisponível]"
-duplicidade:
-  status: "DUPLICIDADE_CONFIRMADA | SEM_DUPLICIDADE_IDENTIFICADA | INDETERMINADO"
-  candidatos: "[processos e coincidências | nenhum]"
-  consultas_e_limitacoes: "[resumo]"
-declaracao_metadados:
-  status: "IDENTIFICADA | INCONCLUSIVA | AUSENTE_POR_METADADOS"
-  documentos_candidatos: "[SEI/título/data | nenhum]"
-  arvore_completa_e_sem_genericos: "sim | não | indeterminado"
-encaminhamento:
-  proximo_modulo: "S2 | S3 | ENCERRAR_POR_DUPLICIDADE"
-  gatilho: "nenhum | DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS"
-  motivo: "[fato e regra de roteamento]"
-```
+No SEI-Pro, a delegação multiagente aciona **agentes auxiliares paralelos** que possuem apenas ferramentas de leitura, não enxergam o histórico da conversa, não carregam esta skill e operam com limite reduzido de passos.
 
-`AUSENTE_POR_METADADOS` só é permitido se a lista estiver completa e explícita, sem arquivo genérico/composto, lacuna, restrição ou pacote plausível. Em qualquer dúvida, use `INCONCLUSIVA`.
+1. **Regra Geral (Processo pequeno/médio — até ~8 documentos relevantes):** Execute a leitura diretamente na conversa principal (Agente Único), consolidando a ficha de cada documento logo após lê-lo para evitar perda de histórico por resumo automático de conversa longa.
+2. **Delegação Nativa (Processo grande — acima de ~8 documentos relevantes ou múltiplos PDFs longos):**
+   - **Rodada Única e Extração Factual:** Delegue **apenas a leitura e extração de fatos** em uma única rodada paralela. Nunca peça aos auxiliares para classificar incisos, emitir juízo de mérito ou consultar "dados já retornados".
+   - **Escopo Granular:** Atribua no máximo **1 PDF longo** ou **3 a 5 documentos curtos** por tarefa delegada, listando os números SEI explícitos separados por vírgula (ex.: `3073816, 3073817, 3073818` — nunca use hifens de intervalo que possam ser mascarados como telefone).
+   - **Prompt Autocontido:** Use obrigatoriamente o **Bloco Literal de Tarefa de Leitura** definido na S2 §1.2, pois o auxiliar só enxerga o texto da tarefa.
+   - **Retomada Cirúrgica:** Se um auxiliar devolver `final_real_atingido: não` com o próximo offset, faça nova chamada individual apenas para o SEI incompleto a partir daquele offset, sem reler os documentos já concluídos.
+   - **Julgamento Centralizado:** Com todas as fichas curtas em mãos, você (Coordenadora) aplica a Matriz Imutável e consolida o relatório S2 antes de acionar a S3.
 
-### Saída S2 — mérito e leitura
+## 4. Fluxo Obrigatório, Roteamento e Reconciliação
 
-Exija: modo A/B; linha de base e controle temporal; conclusão sobre a Declaração, data de emissão e vencimento; matriz dos requisitos aplicáveis com situação controlada, evidências SEI/página; cálculos; Item XIII; documentos ignorados; log de paginação por documento e indicação de fim real; limitações e gatilho, se houver.
+1. **Triagem (S1):** Execute `processo_consultar` e `documentos_listar`; rode a S1. Se `DUPLICIDADE_CONFIRMADA`, encerre e informe o servidor sem alterar o SEI. Se `AUSENTE_POR_METADADOS` (árvore 100% explícita e sem genéricos), acione S3 com `DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS`. Nos demais casos, siga à S2.
+2. **Leitura e Mérito (S2):** Execute a leitura paginada (`tamanho: 15000`) diretamente ou via delegação nativa em rodada única, produzindo o YAML estruturado da S2.
+3. **Etapa de Reconciliação Obrigatória (Antes da S3):** Antes de redigir as saídas da S3, valide cruzadamente o relatório da S2:
+   - *Integridade de evidências:* Nenhum documento listado em `documentos_ignorados_filtro` ou `documentos_nao_extraidos` pode sustentar `Item atendido` ou `Diligência`. Se um documento ignorado for necessário (ex.: contexto SPU), reclassifique-o e leia-o.
+   - *Coerência Assunto vs. Objeto:* Compare o `assunto` dos metadados (ex.: "Adequação de Contrato de Arrendamento") com o objeto real dos autos (ex.: "Contrato de Adesão / TUP") e sinalize divergências no Painel e Check-List.
+   - *Coerência de Empreendimento e Endereço:* Verifique se o nome do empreendimento e o endereço nas licenças/alvarás (itens IX e X) correspondem à instalação requerida (ex.: alvará apenas de escritório administrativo vs. terminal; licença ambiental de outro objeto).
+   - *Gatilho do Item XIII:* Verifique se a ausência de documento SPU está confirmada em documento lido ou se é apenas indício em petição/item `A conferir`.
+4. **Saídas Oficiais (S3):** Acione a S3 para gerar Painel Técnico, Check-List Anexo II e minutas cabíveis. Em lote, processe um processo por vez e encerre com Quadro Resumo Geral.
 
-### Entrada S3 — decisão e redação
+## 5. Gatilhos, Prazos e Regras Transversais
 
-Passe relatórios S1/S2, metadados, datas de ciência/prazo, notificações, documentos novos, pedidos/decisões de prorrogação, status dos itens, gatilhos de ausência e situação SPU. S3 valida que as evidências sustentam o desfecho; não substitui a leitura integral da S2.
+- **`ARQUIVAMENTO_DECLARACAO`:** Acionado apenas por `DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS` ou `DECLARACAO_AUSENTE_CONFIRMADA_POR_LEITURA` (com fim real de todos os documentos plausíveis). S3 gera imediatamente a minuta de arquivamento sem notificação prévia.
+- **`ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA`:** Exige cumulativamente: (1) notificação válida; (2) prazo vencido conforme ciência/regra nos autos; (3) sem pedido de prorrogação; (4) sem documento novo do requerente após a notificação (documento novo, mesmo intempestivo, conduz à reanálise); e (5) sem ato suspensivo. Separe fundamentos: art. 5º, parágrafo único (documental) vs. art. 6º, §§ 1º–2º (Fazenda Nacional/FGTS).
+- **Regras de Cálculo e Status:**
+  - Validade da Declaração = **emissão + 18 meses** (nunca data de assinatura).
+  - Ficha Cadastral = exibir `34 = [X] m² + 35 = [Y] m² = [Soma] m² vs. Total declarado = [Z] m²`, respeitando sobreposição expressa.
+  - Vocabulário exclusivo na coluna Situação: `Item atendido`, `Item não atendido`, `Diligência`, `A conferir` ou `Não se aplica`.
+  - Conteúdo interno, OCR, mascaramento, logs e guia visual ficam apenas no Painel, nunca em minutas externas.
 
-## 3. Fluxo obrigatório e roteamento
+## 6. Autoverificação Numérica e de Conformidade
 
-1. Execute `processo_consultar` e `documentos_listar`; encaminhe à S1.
-2. A S1 pode fazer leitura cadastral pontual para obter CNPJ/nome da instalação. Ela precede a pesquisa de duplicidade, mas não é leitura de mérito.
-3. Se S1 retornar `DUPLICIDADE_CONFIRMADA`, encerre a análise documental e informe o servidor. Não arquive, cancele ou escolha processo prevalente.
-4. Se duplicidade for `INDETERMINADO` por identidade ausente/mascarada ou pacote genérico, siga à S2 sem repetir buscas improdutivas.
-5. Se a Declaração estiver `IDENTIFICADA` ou `INCONCLUSIVA`, acione S2. Título não comprova mérito, validade ou escopo.
-6. Se S1 concluir `AUSENTE_POR_METADADOS` em árvore explicitamente completa, acione S3 com `DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS`; somente nesse caso a leitura de mérito pode ser dispensada.
-7. Em reanálise, S2 identifica a última linha de base e analisa documentos novos. Todo documento do requerente juntado após a notificação deve ser reanalisado mesmo se intempestivo; intempestividade isolada não gera alerta nem arquivamento.
-8. Se S2 confirmar ausência da Declaração após leitura integral de todos os documentos plausíveis, passe `DECLARACAO_AUSENTE_CONFIRMADA_POR_LEITURA` à S3. Conteúdo plausível inacessível impede confirmar ausência.
-9. Encaminhe pendências, prazos, Item XIII e resultados à S3 para Painel, Check-List e minutas cabíveis.
-10. Em lote, processe cada processo separadamente e encerre com Quadro Resumo Geral.
+Antes de finalizar a resposta, confira cada critério objetivo:
+1. O Check-List (Modo A) possui **exatamente 22 linhas** na tabela de requisitos (I, II, III, IV, V.a–V.h, VI, VII, VIII, IX, X, XI, XII, Art. 6º, § 3º e XIII — complementar), sem itens soltos em parágrafos fora da tabela?
+2. Todas as células da coluna `Situação` contêm **estritamente** um dos cinco valores permitidos?
+3. O **número de linhas do Guia Rápido de Conferência Visual** é **rigorosamente igual** ao número de itens marcados como `A conferir` no Check-List, e todos usam apenas motivos da lista fechada da S2?
+4. Se o Item XIII estiver `A conferir` (e não confirmado ausente/irregular), a Notificação de Pendência **omite** qualquer minuta de cobrança do Item XIII?
+5. O Painel contém a **tabela granular de paginação por SEI** e, caso algum documento relevante não tenha `final_real_atingido: sim`, isso está declarado expressamente na Seção 1 do Painel?
+6. Os campos de identificação do Check-List foram preenchidos com os dados extraídos da Ficha Cadastral pela S2 (usando `[a preencher]` apenas se ausentes/mascarados nos autos)?
+7. Nenhuma ação de escrita, assinatura ou tramitação foi executada no SEI?
 
-| Condição | Próxima ação |
-| :--- | :--- |
-| Duplicidade confirmada | Encerrar análise documental; informar servidor, sem arquivamento automático |
-| Duplicidade indeterminada ou não identificada | Prosseguir à S2, salvo ausência estrita por metadados |
-| Declaração identificada ou metadados inconclusivos | S2 obrigatória |
-| Declaração ausente por metadados, em árvore completa e explícita | S3 com `DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS` |
-| Declaração ausente após leitura integral | S3 com `DECLARACAO_AUSENTE_CONFIRMADA_POR_LEITURA` |
-| Arquivo genérico plausível não lido integralmente | `A conferir`; nunca gatilho de ausência |
 
-## 4. Gatilhos e prazos
-
-### `ARQUIVAMENTO_DECLARACAO`
-
-Acione somente por um dos dois gatilhos de ausência acima. Conforme regra operacional do setor, a S3 entrega imediatamente a minuta baseada em `arquivamento_declaracao.md`, sem notificação prévia de saneamento e sem aguardar 30 dias. Não afirme que o processo foi efetivamente arquivado ou que a minuta foi expedida. Outras pendências ficam no Painel e Check-List, mas o desfecho primário é a minuta de arquivamento por falta da Declaração.
-
-### `ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA`
-
-Só acione se forem comprovados cumulativamente: (1) notificação/ofício válido e destinatário; (2) prazo identificável e vencido, contado conforme ciência comprovada ou regra registrada nos autos; (3) inexistência de pedido formal de prorrogação; (4) inexistência de documento novo do requerente após a notificação; e (5) inexistência de decisão, suspensão ou ato que altere prazo/desfecho. Dado faltante ou duvidoso impede arquivamento automático.
-
-O prazo/fundamento depende do objeto: art. 5º, parágrafo único, para desconformidade documental; art. 6º, §§ 1º e 2º, para Fazenda Nacional/FGTS. Não misture fundamentos. Documento novo após a notificação conduz à reanálise, mesmo intempestivo.
-
-### Reabertura
-
-Juntada nova em processo arquivado é entrada de reanálise conforme regra operacional fornecida pelo setor. Não altere a situação no SEI.
-
-## 5. Fase 1 e Item XIII/SPU
-
-- Item XIII — documentação SPU — é linha complementar do formulário/setor, fora do art. 4º da Resolução ANTAQ nº 71/2022, que contém incisos I a XII.
-- Verifique sua aplicabilidade quando houver área terrestre ou espelho d’água sob gestão da SPU. Diferencie essa linha do título do art. 4º, VII, e da hipótese dos §§ 4º e 5º.
-- Pendência do Item XIII **não impede a conclusão da Fase 1 nem a publicação do anúncio/extrato no DOU**. Se houver pendência, inclua-a na Notificação de Pendência em seção separada, com aviso expresso de que se destina ao saneamento e controle das etapas subsequentes e não trava esta primeira fase.
-- Não confunda Item XIII do formulário com inciso XIII do art. 4º. O art. 42, § 1º, da Resolução fornecida contém remissão ao art. 4º, XIII incompatível com a enumeração I–XII do próprio art. 4º; não use essa remissão para transformar o Item XIII complementar em inciso regulamentar.
-
-## 6. Regras transversais
-
-- A validade da Declaração de Adequação é de 18 meses desde a **emissão** (Portaria nº 1.064/2020, art. 6º, § 2º; alteração de perfil, art. 29, § 2º). A data calculada deve aparecer no Painel e no Item I, ainda que haja ressalva de escopo/razão social. Não substituir emissão por assinatura.
-- Sempre mostre `34 = [X] m² + 35 = [Y] m² = [Soma] m² vs. Total declarado = [Z] m²`. Se houver declaração expressa de sobreposição para evitar dupla contagem, explique-a e não gere diligência automática por diferença aritmética; `A conferir` pode ser usado para batimento visual das plantas.
-- Vocabulário exclusivo na coluna Situação: `Item atendido`, `Item não atendido`, `Diligência`, `A conferir` ou `Não se aplica`.
-- Inciso XI: apenas Fazendas Estadual e Municipal. Fazenda Nacional e FGTS: linha autônoma `Art. 6º`.
-- Conteúdo interno, OCR, mascaramento, logs e guia visual ficam no Painel, nunca em minuta externa.
-- Use somente dados confirmados em documentos formais; dados indisponíveis ficam `[a preencher]`.
-
-## 7. Autoverificação da coordenadora
-
-- S1 pesquisou duplicidade após eventual leitura cadastral, sem bloquear por dados mascarados?
-- `AUSENTE_POR_METADADOS` foi usado somente com árvore completa, explícita e sem arquivo genérico/composto?
-- Declaração inconclusiva foi encaminhada à S2?
-- Documentos truncados foram paginados até o final, sem desistência por máscara/OCR?
-- Ausência por leitura foi confirmada somente após todos os documentos plausíveis atingirem o final real?
-- Item I contém vencimento calculado desde emissão e Item II contém cálculo 34+35?
-- Item XIII consta na Notificação quando pendente, com aviso não impeditivo da Fase 1/DOU?
-- Art. 6º está separado do inciso XI; gatilhos de arquivamento estão comprovados cumulativamente?
-- Documentos novos foram reanalisados mesmo intempestivos?
-- Nenhuma ação de alteração/expedição foi feita no SEI?
