@@ -4,46 +4,52 @@
 
 ## 1. Regras de integridade e higiene de saída
 
-- **Preenchimento:** Use todos os dados extraídos pela S2 (especialmente identificação completa da Ficha Cadastral). Use `[a preencher]` apenas quando ausente ou mascarado nos autos.
-- **Blocos externos limpos:** Check-List e Notificações não podem conter comentários internos, menção a OCR, mascaramento, lotes de leitura ou instruções ao servidor.
-- **Vocabulário único na coluna Situação:** `Item atendido`, `Item não atendido`, `Diligência`, `A conferir`, `Não se aplica`.
-- **Proibição de cobrança sem confirmação:** Itens `A conferir` nunca entram na Notificação de Pendência (inclusive o Item XIII, se estiver `A conferir`).
+* **Preenchimento:** Use todos os dados extraídos pela S2 (especialmente identificação completa da Ficha Cadastral). Use `[a preencher]` apenas quando ausente ou mascarado nos autos.
+
+* **Blocos externos limpos:** Check-List e Notificações não podem conter comentários internos, menção a OCR, mascaramento, lotes de leitura ou instruções ao servidor.
+
+* **Vocabulário único na coluna Situação:** `Item atendido`, `Item não atendido`, `Diligência`, `A conferir`, `Não se aplica`.
+
+* **Proibição de cobrança sem confirmação:** Itens `A conferir` nunca entram na Notificação de Pendência (inclusive o Item XIII, se estiver `A conferir`).
 
 ## 2. Regras de prazos, arquivamento e Item XIII
 
 1. **Ausência da Declaração (`ARQUIVAMENTO_DECLARACAO`):** Acione somente com gatilho válido (`DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS` ou `DECLARACAO_AUSENTE_CONFIRMADA_POR_LEITURA`). Emita imediatamente a minuta da Seção 7 (regra operacional do setor, sem notificação prévia de 30 dias) e não emita Notificação de Pendência concorrente.
+
 2. **Diligência vencida (`ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA`):** Exige notificação válida, prazo vencido, ausência de pedido de prorrogação, ausência de documento novo após notificação (documento novo exige reanálise, mesmo intempestivo) e ausência de suspensão. Separe art. 5º, parágrafo único (documental) do art. 6º, §§ 1º–2º (Fazenda Nacional/FGTS).
+
 3. **Item XIII (SPU):**
-   - Sempre ocupa a **22ª linha** da tabela do Check-List (nunca em parágrafo solto fora da tabela).
-   - Só entra na Notificação de Pendência se a ausência/pendência estiver **confirmada** nos autos (frase genérica na petição sem documento conclusivo gera apenas registro no Painel e `A conferir`, sem minuta).
-   - Quando incluído na Notificação, aparece em **seção separada** com o **aviso literal** de que não impede a conclusão da Fase 1 nem a publicação do extrato no DOU.
+
+   * Sempre ocupa a **22ª linha** da tabela do Check-List (nunca em parágrafo solto fora da tabela).
+
+   * Só entra na Notificação de Pendência se a ausência/pendência estiver **confirmada** nos autos (frase genérica na petição sem documento conclusivo gera apenas registro no Painel e `A conferir`, sem minuta).
+
+   * Quando incluído na Notificação, aparece em **seção separada** com o **aviso literal** de que não impede a conclusão da Fase 1 nem a publicação do extrato no DOU.
 
 ## 3. Ordem obrigatória de entrega
 
 1. **Painel Técnico do Servidor** (Markdown fora de bloco de código).
+
 2. **Check-List Anexo II** (bloco `markdown` limpo, obrigatoriamente com as **22 linhas** no Modo A).
+
 3. **Notificação de Pendência** (bloco `markdown` limpo, apenas se houver pendência confirmada ou Item XIII confirmado).
+
 4. **Notificação de Arquivamento** (bloco `markdown` limpo, apenas com gatilho comprovado).
 
 ## 4. Modelo — Painel Técnico do Servidor
 
-```markdown
+```
 ## PAINEL TÉCNICO DO SERVIDOR — Processo nº [nº] ([Modo A | Modo B])
 
 **Resumo:** [instalação/pedido, coerência assunto x objeto, status geral, pendências impeditivas, Item XIII e itens em conferência]
 
-### 1. Triagem, leitura e log de paginação
-- **Duplicidade:** [status e consultas]
-- **Gatekeeper da Declaração:** [status e metadados]
-- **Linha de base / Última notificação / Último doc. requerente:** [SEIs e datas]
-- **Cobertura de leitura:** [Leitura integral confirmada | Leitura parcial — listar SEIs sem fim real]
-
-| SEI | Título | Chamadas e faixas | Caracteres lidos | Corte | Fim real atingido |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| [SEI] | [título] | [faixas] | [total] | [sim/não] | [sim/não/indeterminado] |
-
-- **Documentos ignorados pelo filtro:** [SEI — tipo — motivo, ou “Nenhum”]
-- **Capas ZIP / não extraídos:** [SEI — motivo — requisito afetado, ou “Nenhum”]
+### 1. Leitura realizada
+- Lotes de `documento_ler`: [Lote 1 (n arquivos): ...; Lote 2 (n arquivos): ...]
+- Documentos ignorados pelo Filtro de Relevância: [nº SEI — tipo; ...]
+- Documentos cancelados/sigilosos/sem acesso: [nº SEI ou "nenhum"]
+- Suposições adotadas / ambiguidades: [ou "nenhuma"]
+- (Modo B) Linha de base: Check-List SEI [nº] de [data]; Notificação SEI [nº]; ciência em [data]; prazo-limite [data]; resposta SEI [nº] em [data] — [tempestiva | intempestiva | sem resposta | prorrogação nos autos]
+- (Modo B) Itens A conferir da linha de base mantidos sem releitura: [itens ou "nenhum"]
 
 ### 2. Prazos e gatilhos
 - **Prazo-limite e critério:** [data/regra ou não calculável]
@@ -68,11 +74,12 @@
 
 ### 6. Próximo passo
 - [Minutas geradas e convite ao servidor para confirmar os itens `A conferir`. Nenhuma ação foi executada no SEI.]
+
 ```
 
 ## 5. Modelo — Check-List Anexo II (Modo A — 22 linhas fixas)
 
-```markdown
+```
 # CHECK-LIST DE HABILITAÇÃO — ANEXO II
 **Análise de requerimento de autorização para instalação portuária ([TUP/ETC/IP4/IPTur])**
 **Construção / Exploração / Alteração**
@@ -134,13 +141,14 @@ Lei nº 12.815/2013 — Decreto nº 8.033/2013 — Resolução ANTAQ nº 71/2022
 
 ## 3. CONCLUSÃO
 [Conclusão factual sem condicionar Fase 1/DOU ao Item XIII.]
+
 ```
 
 *(Para o **Modo B**, preserve o bloco de identificação com linha de base e apresente na Seção 2 a tabela delta `Item | Requisito | Situação Anterior | Situação | Constatação e Ref. SEI`, mantendo o Item XIII dentro da tabela sempre que reavaliado ou pendente.)*
 
 ## 6. Modelo — Notificação de Pendência
 
-```markdown
+```
 # NOTIFICAÇÃO
 
 **Processo nº:** [nº]  
@@ -165,13 +173,14 @@ Atenciosamente,
 
 [Nome do servidor]  
 [Cargo/Unidade]
+
 ```
 
 *(Omita a seção XIII se não houver pendência confirmada; omita as pendências impeditivas e o parágrafo de arquivamento se a única pendência confirmada for o Item XIII.)*
 
 ## 7. Modelo — Notificação de Arquivamento (Ausência da Declaração)
 
-```markdown
+```
 # NOTIFICAÇÃO
 
 Ao Senhor  
@@ -209,4 +218,5 @@ Atenciosamente,
 [Nome do Servidor]  
 Gerência de Outorgas e Autorizações — GOA  
 Agência Nacional de Transportes Aquaviários — ANTAQ
+
 ```
