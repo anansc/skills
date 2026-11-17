@@ -1,94 +1,89 @@
-# SUBSKILL 3 — PRAZOS, CHECK-LIST (22 LINHAS) E DESFECHOS
+# SUBSKILL 3 — PAINEL, CHECK-LIST (22 LINHAS) E DESFECHOS
 
-> Converte os relatórios validados das S1/S2 em Painel Técnico, Check-List Anexo II e minutas externas limpas. Não executa atos no SEI.
+> Converte os relatórios validados das S1/S2 em Painel Técnico, Check-List Anexo II e minutas externas limpas. Não executa atos no SEI. Escreve para servidores fora da área de TI: linguagem simples, sem termos técnicos (S0 §6).
 
 ## 1. Regras de integridade e higiene de saída
 
-* **Preenchimento:** Use todos os dados extraídos pela S2 (especialmente identificação completa da Ficha Cadastral e coordenadas geográficas). Use `[a preencher]` apenas quando ausente ou mascarado nos autos.
-
-* **Blocos externos limpos:** Check-List e Notificações não podem conter comentários internos, menção a OCR, mascaramento, lotes de leitura, eufemismos como *"conferência em andamento pela GOA"* ou notas/instruções ao servidor. Encerre cada bloco de minuta imediatamente na assinatura (`[Cargo/Unidade]`).
-
-* **Vocabulário único na coluna Situação:** `Item atendido`, `Item não atendido`, `Diligência`, `A conferir`, `Não se aplica`.
-
-* **Espelhamento 1-para-1 e Proibição de Cobrança sem Confirmação:** A lista numerada de pendências impeditivas na Notificação deve corresponder **exatamente** aos itens marcados como `Diligência` ou `Item não atendido` no Check-List (excluindo o Item XIII, que vai em seção própria). Itens `A conferir` nunca entram nem são citados na Notificação de Pendência.
+1. **Fonte única:** Check-List, Conclusão e Notificação são gerados **a partir da Lista Canônica de Pendências** (S2 §7), nunca de memória. Ordem de geração no turno: Painel → Check-List → Notificação → Arquivamento (se couber).
+2. **Preenchimento:** use todos os dados extraídos pela S2 (identificação completa da Ficha e coordenadas). Dados ocultos ou protegidos nos autos viram `[a preencher]` (nunca um marcador do sistema entre colchetes, como CEP, telefone ou e-mail).
+3. **Blocos externos limpos:** Check-List e Notificações não contêm comentários internos, menção a leitura técnica, termos proibidos (S0 §6), nem frases como "esta minuta não foi inserida no SEI". Cada bloco `markdown` **termina na assinatura `[Cargo/Unidade]`**; nada vem depois dela dentro do bloco. Observações ao servidor vão apenas para a seção 8 do Painel.
+4. **Vocabulário único na coluna Situação:** `Item atendido`, `Item não atendido`, `Diligência`, `A conferir`, `Não se aplica`.
+5. **Espelhamento 1-para-1:** a lista numerada de pendências impeditivas da Notificação = exatamente os itens `Diligência` ou `Item não atendido` do Check-List (exceto XIII, em seção própria). Itens `A conferir` nunca entram nem são citados na Notificação.
+6. **Tamanho:** coluna "Constatação" do Check-List com cerca de 30 palavras por linha, sempre com SEI e página.
+7. **Mudança de caso:** na Reanálise, itens já atendidos e sem alteração mantêm a situação com referência à análise anterior.
 
 ## 2. Regras de prazos, arquivamento e Item XIII
 
-1. **Ausência da Declaração (`ARQUIVAMENTO_DECLARACAO`):** Acione somente com gatilho válido (`DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS` ou `DECLARACAO_AUSENTE_CONFIRMADA_POR_LEITURA`). Emita imediatamente a minuta da Seção 7 (regra operacional do setor, sem notificação prévia de 30 dias) e não emita Notificação de Pendência concorrente.
-
-2. **Diligência vencida (`ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA`):** Exige cumulativamente notificação válida, prazo vencido, ausência de pedido de prorrogação, ausência de documento novo após notificação (documento novo exige reanálise, mesmo intempestivo) e ausência de suspensão. Separe art. 5º, parágrafo único (documental) do art. 6º, §§ 1º–2º (Fazenda Nacional/FGTS).
-
-3. **Item XIII (SPU):**
-
-   * Sempre ocupa a **22ª linha** da tabela do Check-List (nunca em parágrafo solto fora da tabela).
-
-   * Só entra na Notificação de Pendência se a ausência/vencimento/pendência estiver **confirmada** nos autos (frase genérica na petição sem documento conclusivo gera apenas registro no Painel e `A conferir`, sem minuta).
-
-   * Quando incluído na Notificação, aparece em **seção separada** com o **aviso literal** de que não impede a conclusão da Fase 1 nem a publicação do extrato no DOU.
+1. **Ausência da Declaração (`ARQUIVAMENTO_DECLARACAO`):** só com gatilho válido (`DECLARACAO_AUSENTE_CONFIRMADA_POR_METADADOS` ou `..._POR_LEITURA`). Emita imediatamente a minuta da Seção 7 (sem notificação prévia de 30 dias) e não emita Notificação de Pendência concorrente.
+2. **Diligência vencida (`ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA`):** exige cumulativamente notificação válida, prazo vencido, ausência de pedido de prorrogação, ausência de documento novo após a notificação (documento novo exige reanálise, mesmo intempestivo) e ausência de suspensão. Separe art. 5º, parágrafo único (documental) de art. 6º, §§ 1º–2º (Fazenda Nacional/FGTS).
+3. **Item XIII (SPU):** ocupa sempre a **22ª linha** da tabela do Check-List. Só entra na Notificação se a ausência/vencimento/pendência estiver **confirmada** em documento lido (frase genérica em petição gera apenas registro no Painel e `A conferir`, sem minuta). Quando incluído, aparece em **seção separada** com o **aviso literal** de que não impede a conclusão da Fase 1 nem a publicação do extrato no DOU.
 
 ## 3. Ordem obrigatória de entrega
 
 1. **Painel Técnico do Servidor** (Markdown fora de bloco de código).
-
-2. **Check-List Anexo II** (bloco `markdown` limpo, obrigatoriamente com as **22 linhas** no Modo A).
-
-3. **Notificação de Pendência** (bloco `markdown` limpo, apenas se houver pendência confirmada ou Item XIII confirmado).
-
-4. **Notificação de Arquivamento** (bloco `markdown` limpo, apenas com gatilho comprovado).
+2. **Check-List Anexo II** (bloco `markdown` limpo; 22 linhas na Análise).
+3. **Notificação de Pendência** (bloco `markdown` limpo; só se houver pendência confirmada ou XIII confirmado).
+4. **Notificação de Arquivamento** (bloco `markdown` limpo; só com gatilho comprovado).
 
 ## 4. Modelo — Painel Técnico do Servidor
 
+Todas as 8 seções abaixo são **obrigatórias**, com estes títulos.
+
 ```
-## PAINEL TÉCNICO DO SERVIDOR — Processo nº [nº] ([Modo A | Modo B])
+## PAINEL TÉCNICO DO SERVIDOR — Processo nº [nº] ([Análise | Reanálise])
 
-**Resumo:** [instalação/pedido, coerência assunto x objeto, status geral, contagem de pendências impeditivas, Item XIII e itens em conferência]
+**Resumo:** [instalação/pedido; coerência entre assunto e objeto; situação geral; número de pendências impeditivas; Item XIII; itens para conferência visual]
 
-### 1. Quadro de Presença Documental
+### 1. Verificação inicial
+- **Duplicidade:** [uma frase simples — S1 §3.2]
+- **Tipo de atividade:** [Análise (primeira análise do pedido) | Reanálise (há notificação/análise anterior nos autos)]
+- **Declaração de Adequação:** [Presente (SEI nº; emitida em [data]; válida até [data]) | Ausente]
+
+### 2. Leitura dos documentos
+- **Leitura completa dos documentos relevantes:** [Sim | Não]
+- **Documentos não lidos corretamente:** [lista "SEI nº — título — motivo simples — requisitos afetados" | nenhum]
+
+[Somente na Reanálise — tabela:]
+**Documentos considerados nesta reanálise**
+| Tipo | SEI nº | Data | Como foi considerado |
+| :--- | :--- | :--- | :--- |
+| [Notificação / Ofício / Despacho / Check-List anterior / Resposta do requerente / Prorrogação] | [nº] | [data] | [ex.: define o prazo; linha de base; resposta analisada] |
+
+### 3. Quadro de Presença Documental
 | Situação | Incisos e nºs SEI |
 | :--- | :--- |
 | Presentes e regulares | [ex.: I (SEI ...); III (SEI ...)] |
-| Ausentes ou com pendência confirmada | [ex.: II (SEI ...); Art. 6º (ausência de CRF/FGTS); XIII (SPU vencida)] |
-| Não totalmente analisados / a conferir | [ex.: VI (SEI ...); XII (SEI ... — OCR)] |
+| Ausentes ou com pendência confirmada | [ex.: II (SEI ...); Art. 6º (sem CRF/FGTS); XIII (SPU vencida)] |
+| A conferir | [ex.: VI (SEI ...)] |
+| Não se aplica | [ex.: VII; § 3º — motivo] |
 
-### 2. Leitura realizada e log de paginação
-- **Estratégia e cobertura:** [Agente Único com chamadas paralelas ou delegação nativa; declaração expressa de "leitura integral" ou "leitura parcial" listando SEIs incompletos]
-- **Documentos ignorados pelo Filtro de Relevância:** [nº SEI — tipo; ...]
-- **Documentos cancelados/sigilosos/ZIP/sem acesso:** [nº SEI — motivo ou "nenhum"]
-- **Decisões técnicas sobre leitura e segurança:** [limitações de OCR, mascaramento, links externos não acessados, eventual texto documental ignorado como instrução]
-- *(Modo B) Linha de base:* Check-List SEI [nº] de [data]; Notificação SEI [nº]; ciência em [data]; prazo-limite [data]; resposta SEI [nº] em [data] — [tempestiva | intempestiva | sem resposta | prorrogação nos autos]; itens `A conferir` mantidos sem releitura: [itens ou "nenhum"].
-
-| SEI | Documento | Chamadas e faixas lidas | Caracteres | Corte / final real |
-| :--- | :--- | :--- | ---: | :--- |
-| [nº] | [título] | [ex.: 1 chamada: 0–3.474] | [total] | [Não / sim] |
-
-### 3. Prazos e gatilhos
-- **Prazo-limite e critério:** [data/regra ou não calculável]
-- **Prorrogação / Documento novo após notificação:** [fatos e SEIs]
+### 4. Prazos e gatilhos
+- **Prazo-limite e critério:** [data/regra | "Não há notificação anterior; prazos não se aplicam"]
+- **Prorrogação / documento novo após a notificação:** [fatos e SEIs | não se aplica]
 - **Gatilho de arquivamento:** [nenhum | ARQUIVAMENTO_DECLARACAO | ARQUIVAMENTO_POR_DILIGENCIA_VENCIDA]
 
-### 4. Cálculos obrigatórios, cruzamentos e alertas
-- **Declaração (Item I):** emissão [data]; validade até [emissão + 18 meses]; ref. [SEI/pág.].
-- **Ficha Cadastral (Item II):** `34 = [X] m² + 35 = [Y] m² = [Soma] m² vs. Total declarado = [Z] m²`. Sobreposição: [explicação/nenhuma].
-- **Cruzamento espacial e locacional:** [título x Ficha x plantas x alvará x LO x SPU — margem, endereço, coordenadas e diferenças de área].
-- **Cruzamento técnico, financeiro e de representação:** [embarcação-tipo, movimentação, valores de investimento, cronogramas e cadeia de procuração/assinaturas].
-- **Alertas de validade (≤ 30 dias):** [certidões/licenças prestes a vencer ou "nenhum"].
+### 5. Cálculos, cruzamentos e alertas
+- **Declaração (I):** emissão [data]; validade até [emissão + 18 meses]; ref. [SEI/pág.].
+- **Ficha Cadastral (II):** `34 = [X] m² + 35 = [Y] m² = [Soma] m² vs. Total declarado = [Z] m²`. Sobreposição: [explicação | nenhuma].
+- **Cruzamentos (só divergências e dados indisponíveis):** [espacial; capacidade e operação; financeiro e cronograma; representação legal — em frases curtas, com SEI]
+- **Alertas de validade (até 30 dias):** [itens | nenhum]
 
-### 5. Pendências e enquadramento Fase 1
-- [Itens `Item não atendido` ou `Diligência` com SEI]
+### 6. Pendências e enquadramento da Fase 1
+- [Itens `Item não atendido` ou `Diligência`, com SEI]
 - [Art. 6º — Fazenda Nacional/FGTS, separado do inciso XI]
-- [Item XIII/SPU — aplicabilidade, situação e aviso de não impedimento da Fase 1/DOU]
+- [Item XIII/SPU — situação e aviso de que não impede a Fase 1/DOU]
 
-### 6. Guia Rápido de Conferência Visual (1 linha por item `A conferir`)
-| Item | Abrir SEI nº | O que checar visualmente | Motivo (lista fechada) | Texto-sugestão de pendência (se confirmada falha) |
+### 7. Guia Rápido de Conferência Visual (1 linha por item `A conferir`)
+| Item | Abrir SEI nº | O que checar visualmente | Motivo | Texto-sugestão de pendência (se confirmada a falha) |
 | :--- | :--- | :--- | :--- | :--- |
-| [item] | [SEI] | [checagem objetiva] | [motivo] | [texto externo sugerido] |
+| [item] | [SEI] | [checagem objetiva] | [motivo da lista fechada] | [texto externo sugerido] |
 
-### 7. Próximo passo
+### 8. Próximo passo
 - [Minutas geradas e convite ao servidor para confirmar os itens `A conferir`. Nenhuma ação foi executada no SEI.]
 - **Lembrete operacional após expedir a Notificação:** atualizar o protocolo para a aba **Monitorados** no sistema e adicionar as etiquetas e os prazos correspondentes.
 ```
 
-## 5. Modelo — Check-List Anexo II (Modo A — 22 linhas fixas)
+## 5. Modelo — Check-List Anexo II (Análise — 22 linhas fixas)
 
 ```
 # CHECK-LIST DE HABILITAÇÃO — ANEXO II
@@ -140,21 +135,21 @@ Lei nº 12.815/2013 — Decreto nº 8.033/2013 — Resolução ANTAQ nº 71/2022
 | **V.g** | Estimativa de Movimentação | [status] | [constatação e SEI/pág.] |
 | **V.h** | Valor Global do Investimento | [status] | [constatação e SEI/pág.] |
 | **VI** | Planta de Locação | [status] | [constatação e SEI/pág.] |
-| **VII** | Título de Propriedade / Posse | [status] | [constatação e SEI/pág.] |
+| **VII** | Título de Propriedade / Posse | [status] | [constatação e SEI/pág. ou motivo de não aplicação] |
 | **VIII** | Consulta à Autoridade Aduaneira | [status] | [constatação e SEI/pág.] |
 | **IX** | Consulta ao Poder Público Municipal | [status] | [constatação/diferimento motivado e SEI/pág.] |
 | **X** | Licenciamento Ambiental | [status] | [fase, validade impressa e SEI/pág.] |
 | **XI** | Regularidade Fazendas Estadual e Municipal | [status] | [somente Estadual/Municipal; constatação, validade e SEI/pág.] |
 | **XII** | Parecer da Autoridade Marítima | [status] | [constatação e SEI/pág.] |
 | **Art. 6º** | Regularidade Fazenda Nacional e FGTS | [status] | [certidões/consulta, datas e SEI/pág.; separado do inciso XI] |
-| **§ 3º** | Requisitos de Passageiros (IPTur / IP4) | [status] | [constatação e SEI/pág. ou “Não se aplica” motivado] |
-| **XIII — complementar** | Documentação SPU (área/espelho d’água da União; fora do art. 4º da Res. nº 71/2022) | [status] | [documento/SEI ou justificativa de não aplicação; não impede Fase 1/DOU] |
+| **§ 3º** | Requisitos de Passageiros (IPTur / IP4) | [status] | [constatação e SEI/pág. ou "Não se aplica" motivado] |
+| **XIII — complementar** | Documentação SPU (área/espelho d’água da União; fora do art. 4º da Res. nº 71/2022) | [status] | [documento/SEI ou justificativa; não impede Fase 1/DOU] |
 
 ## 3. CONCLUSÃO
-[Conclusão factual espelhando exatamente os itens marcados como Diligência ou Item não atendido, sem condicionar Fase 1/DOU ao Item XIII.]
+[Conclusão factual espelhando exatamente a Lista Canônica (itens Diligência ou Item não atendido), sem condicionar Fase 1/DOU ao Item XIII.]
 ```
 
-*(Para o **Modo B**, preserve o bloco de identificação com linha de base e apresente na Seção 2 a tabela delta `Item | Requisito | Situação Anterior | Situação | Constatação e Ref. SEI`, mantendo o Item XIII dentro da tabela sempre que reavaliado ou pendente.)*
+*(Reanálise: preserve o bloco de identificação, indicando a data da análise anterior, e apresente na Seção 2 a tabela delta `Item | Requisito | Situação Anterior | Situação | Constatação e Ref. SEI`, mantendo o Item XIII dentro da tabela sempre que reavaliado ou pendente. Cite na Constatação os SEIs da resposta analisada.)*
 
 ## 6. Modelo — Notificação de Pendência
 
@@ -185,7 +180,7 @@ Atenciosamente,
 [Cargo/Unidade]
 ```
 
-*(Omita a seção XIII se não houver pendência confirmada; omita as pendências impeditivas e o parágrafo de arquivamento se a única pendência confirmada for o Item XIII. Nunca inclua notas internas ou menção a itens `A conferir` neste bloco.)*
+*(Omita a seção XIII se não houver pendência confirmada; omita as pendências impeditivas e o trecho de prazo/arquivamento se a única pendência confirmada for o Item XIII. Nunca inclua notas internas, observações ao servidor ou menção a itens `A conferir`. O bloco termina em `[Cargo/Unidade]`.)*
 
 ## 7. Modelo — Notificação de Arquivamento (Ausência da Declaração)
 
